@@ -94,7 +94,8 @@ class QuestionController extends ChangeNotifier {
         if (timeLeft > 0 && !isPaused) {
           timeLeft--;
         } else if (!isAnswered && !isPaused) {
-          checkAnswer("");
+          _playSound("sounds/timer.mp3"); // 🔔 son quand temps écoulé
+          checkAnswer(""); // passer à la question suivante avec mauvaise réponse
         }
         notifyListeners();
       });
