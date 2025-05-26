@@ -14,7 +14,7 @@ class QuizService {
   // Fetch questions from the OpenTDB API based on selected category ID
   Future<List<Map<String, dynamic>>> fetchQuestions({
     required int amount,
-    required int categoryId,  // Changed category parameter to categoryId
+    required int categoryId,
     required String difficulty,
   }) async {
     final url =

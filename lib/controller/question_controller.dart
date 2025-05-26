@@ -1,4 +1,3 @@
-// 📁 lib/controller/question_controller.dart
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -6,12 +5,12 @@ import 'package:quiz_app/service/quiz_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:quiz_app/screens/signIn_screen.dart';
+import 'package:vibration/vibration.dart';
 
 class QuestionController extends ChangeNotifier {
   final BuildContext context;
   final dynamic widget;
   final TickerProvider vsync;
-
   late AnimationController animationController;
   late Animation<double> fadeAnimation;
   final AudioPlayer _audioPlayer = AudioPlayer();
@@ -71,15 +70,17 @@ class QuestionController extends ChangeNotifier {
       startTimer();
       notifyListeners();
     } catch (e) {
+      final isDark = Theme.of(context).brightness == Brightness.dark;
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
-          title: Text("Erreur", style: GoogleFonts.poppins()),
-          content: Text("Impossible de charger les questions.", style: GoogleFonts.poppins()),
+          backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+          title: Text("Erreur", style: GoogleFonts.poppins(color: isDark ? Colors.white : Colors.black)),
+          content: Text("Impossible de charger les questions.", style: GoogleFonts.poppins(color: isDark ? Colors.white70 : Colors.black87)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text("OK", style: GoogleFonts.poppins()),
+              child: Text("OK", style: GoogleFonts.poppins(color: isDark ? Colors.tealAccent : Colors.blue)),
             ),
           ],
         ),
@@ -87,18 +88,29 @@ class QuestionController extends ChangeNotifier {
     }
   }
 
-  void startTimer() {
+  void startTimer() async {
     _timer?.cancel();
+
+    await _audioPlayer.stop(); // stop old sound
+    await _audioPlayer.setReleaseMode(ReleaseMode.loop);
+    await _audioPlayer.play(AssetSource("sounds/timer.mp3"), volume: 1.0);
+
     if (!isPaused) {
-      _timer = Timer.periodic(Duration(seconds: 1), (timer) async {
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
         if (timeLeft > 0 && !isPaused) {
           timeLeft--;
+
+          if (timeLeft == 5) {
+            if (await Vibration.hasVibrator() ?? false) {
+              Vibration.vibrate(duration: 300);
+            }
+          }
         } else if (!isAnswered && !isPaused) {
-          timeLeft = 0;
           _timer?.cancel();
-          await _playSound("sounds/timer.mp3");
-          checkAnswer("");
+          await _audioPlayer.stop();
+          checkAnswer("", autoTimeout: true);
         }
+
         notifyListeners();
       });
     }
@@ -108,18 +120,29 @@ class QuestionController extends ChangeNotifier {
     isPaused = !isPaused;
     if (isPaused) {
       _timer?.cancel();
+      _stopTimerLoop();
     } else {
       startTimer();
     }
     notifyListeners();
   }
 
+  Future<void> _stopTimerLoop() async {
+    try {
+      await _audioPlayer.stop();
+      await _audioPlayer.setReleaseMode(ReleaseMode.release);
+    } catch (e) {
+      debugPrint("Erreur arrêt timer: $e");
+    }
+  }
+
   Future<void> _playSound(String path) async {
     try {
       await _audioPlayer.stop();
-      await _audioPlayer.play(AssetSource(path));
+      await _audioPlayer.setReleaseMode(ReleaseMode.release);
+      await _audioPlayer.play(AssetSource(path), volume: 1.0);
     } catch (e) {
-      print("Erreur audio : $e");
+      debugPrint("Erreur audio: $e");
     }
   }
 
@@ -137,37 +160,48 @@ class QuestionController extends ChangeNotifier {
     }
   }
 
-  void checkAnswer(String answer) {
+  void checkAnswer(String answer, {bool autoTimeout = false}) async {
     _timer?.cancel();
+    await _audioPlayer.stop();
     isAnswered = true;
     selectedAnswer = answer;
     correctAnswer = questions[currentQuestionIndex]["correctAnswer"];
     notifyListeners();
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    if (!autoTimeout && (await Vibration.hasVibrator() ?? false)) {
+      Vibration.vibrate(duration: 150);
+    }
+
     if (answer == correctAnswer) {
       streak++;
       score += streak >= 3 ? 2 : 1;
       _playSound("sounds/correct.mp3");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("✅ Good answer!"),
-          backgroundColor: Colors.green,
-          duration: Duration(milliseconds: 800),
-        ),
-      );
+      if (!autoTimeout) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("✅ Good answer!", style: GoogleFonts.poppins(color: Colors.white)),
+            backgroundColor: isDark ? Colors.green[400] : Colors.green,
+            duration: Duration(milliseconds: 800),
+          ),
+        );
+      }
     } else {
       streak = 0;
       _playSound("sounds/wrong.mp3");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("❌ Bad response!"),
-          backgroundColor: Colors.red,
-          duration: Duration(milliseconds: 800),
-        ),
-      );
+      if (!autoTimeout) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("❌ Bad response!", style: GoogleFonts.poppins(color: Colors.white)),
+            backgroundColor: isDark ? Colors.red[400] : Colors.red,
+            duration: Duration(milliseconds: 800),
+          ),
+        );
+      }
     }
 
-    Future.delayed(Duration(seconds: 1), () {
+    Future.delayed(Duration(seconds: autoTimeout ? 2 : 1), () {
       if (currentQuestionIndex < widget.amount - 1) {
         currentQuestionIndex++;
         isAnswered = false;
@@ -196,23 +230,26 @@ class QuestionController extends ChangeNotifier {
 
   void showResults() {
     _timer?.cancel();
+    _stopTimerLoop();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) => AlertDialog(
-        title: Text("Quiz Terminé", style: GoogleFonts.poppins()),
+        backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        title: Text("Quiz Terminé", style: GoogleFonts.poppins(color: isDark ? Colors.white : Colors.black)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text("Score: $score / ${widget.amount}", style: GoogleFonts.poppins()),
-            Text("Streak max: $streak", style: GoogleFonts.poppins()),
-            Text("Catégorie: ${widget.category}", style: GoogleFonts.poppins()),
+            Text("Score: $score / ${widget.amount}", style: GoogleFonts.poppins(color: isDark ? Colors.white70 : Colors.black)),
+            Text("Streak max: $streak", style: GoogleFonts.poppins(color: isDark ? Colors.white70 : Colors.black)),
+            Text("Catégorie: ${widget.category}", style: GoogleFonts.poppins(color: isDark ? Colors.white70 : Colors.black)),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text("Retour", style: GoogleFonts.poppins()),
+            child: Text("Retour", style: GoogleFonts.poppins(color: isDark ? Colors.tealAccent : Colors.blue)),
           ),
           ElevatedButton(
             onPressed: () {
