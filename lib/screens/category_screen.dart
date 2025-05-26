@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:quiz_app/main.dart';
 import 'package:quiz_app/screens/question_screen.dart';
+import 'QuizHistoryPage.dart';
 
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({Key? key}) : super(key: key);
@@ -177,7 +178,7 @@ class _CategoryScreenState extends State<CategoryScreen> with SingleTickerProvid
                       ),
                     ),
 
-                    const Spacer(),
+                    const SizedBox(height: 24),
 
                     // ▶️ Start Quiz
                     ElevatedButton.icon(
@@ -188,6 +189,26 @@ class _CategoryScreenState extends State<CategoryScreen> with SingleTickerProvid
                         backgroundColor: primaryColor,
                         foregroundColor: Colors.white,
                         minimumSize: const Size.fromHeight(50),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    // 📜 View History
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => QuizHistoryPage()),
+                        );
+                      },
+                      icon: Icon(Icons.history),
+                      label: Text("Voir mes scores", style: TextStyle(fontSize: 16)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: isDark ? Colors.grey[800] : Colors.deepPurple,
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size.fromHeight(48),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                       ),
                     ),

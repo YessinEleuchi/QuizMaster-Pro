@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:quiz_app/service/quiz_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:quiz_app/screens/signIn_screen.dart';
-import 'package:vibration/vibration.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class QuestionController extends ChangeNotifier {
   final BuildContext context;
@@ -14,6 +15,7 @@ class QuestionController extends ChangeNotifier {
   late AnimationController animationController;
   late Animation<double> fadeAnimation;
   final AudioPlayer _audioPlayer = AudioPlayer();
+  List<Map<String, dynamic>> userResponses = [];
 
   List<Map<String, dynamic>> questions = [];
   bool isLoading = true;
@@ -58,6 +60,23 @@ class QuestionController extends ChangeNotifier {
     super.dispose();
   }
 
+  Future<void> saveQuizScore() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final quizResult = {
+      "userId": user.uid,
+      "category": widget.category,
+      "score": score,
+      "timestamp": Timestamp.now(),
+    };
+
+    await FirebaseFirestore.instance
+        .collection("quiz_scores")
+        .add(quizResult);
+  }
+
+
   Future<void> fetchQuestions() async {
     try {
       int categoryId = categoryMap[widget.category] ?? 9;
@@ -91,7 +110,7 @@ class QuestionController extends ChangeNotifier {
   void startTimer() async {
     _timer?.cancel();
 
-    await _audioPlayer.stop(); // stop old sound
+    await _audioPlayer.stop();
     await _audioPlayer.setReleaseMode(ReleaseMode.loop);
     await _audioPlayer.play(AssetSource("sounds/timer.mp3"), volume: 1.0);
 
@@ -101,9 +120,7 @@ class QuestionController extends ChangeNotifier {
           timeLeft--;
 
           if (timeLeft == 5) {
-            if (await Vibration.hasVibrator() ?? false) {
-              Vibration.vibrate(duration: 300);
-            }
+            HapticFeedback.heavyImpact(); // ✅ Native haptic
           }
         } else if (!isAnswered && !isPaused) {
           _timer?.cancel();
@@ -170,14 +187,15 @@ class QuestionController extends ChangeNotifier {
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    if (!autoTimeout && (await Vibration.hasVibrator() ?? false)) {
-      Vibration.vibrate(duration: 150);
+    if (!autoTimeout) {
+      HapticFeedback.mediumImpact(); // ✅ Feedback when answered
     }
 
     if (answer == correctAnswer) {
       streak++;
       score += streak >= 3 ? 2 : 1;
       _playSound("sounds/correct.mp3");
+
       if (!autoTimeout) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -190,7 +208,9 @@ class QuestionController extends ChangeNotifier {
     } else {
       streak = 0;
       _playSound("sounds/wrong.mp3");
+
       if (!autoTimeout) {
+        HapticFeedback.heavyImpact(); // ❌ Wrong answer feedback
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text("❌ Bad response!", style: GoogleFonts.poppins(color: Colors.white)),
@@ -224,6 +244,7 @@ class QuestionController extends ChangeNotifier {
       options.shuffle();
       questions[currentQuestionIndex]["options"] = [correctAnswer, options.first]..shuffle();
       hintsLeft--;
+      HapticFeedback.selectionClick(); // ✅ Hint feedback
       notifyListeners();
     }
   }
@@ -231,6 +252,7 @@ class QuestionController extends ChangeNotifier {
   void showResults() {
     _timer?.cancel();
     _stopTimerLoop();
+    saveQuizScore();
     final isDark = Theme.of(context).brightness == Brightness.dark;
     showDialog(
       context: context,
