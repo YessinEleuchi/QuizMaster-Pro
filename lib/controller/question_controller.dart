@@ -90,12 +90,14 @@ class QuestionController extends ChangeNotifier {
   void startTimer() {
     _timer?.cancel();
     if (!isPaused) {
-      _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      _timer = Timer.periodic(Duration(seconds: 1), (timer) async {
         if (timeLeft > 0 && !isPaused) {
           timeLeft--;
         } else if (!isAnswered && !isPaused) {
-          _playSound("sounds/timer.mp3"); // 🔔 son quand temps écoulé
-          checkAnswer(""); // passer à la question suivante avec mauvaise réponse
+          timeLeft = 0;
+          _timer?.cancel();
+          await _playSound("sounds/timer.mp3");
+          checkAnswer("");
         }
         notifyListeners();
       });
@@ -140,7 +142,7 @@ class QuestionController extends ChangeNotifier {
     isAnswered = true;
     selectedAnswer = answer;
     correctAnswer = questions[currentQuestionIndex]["correctAnswer"];
-    notifyListeners(); // 🔥 nécessaire pour rafraîchir la vue
+    notifyListeners();
 
     if (answer == correctAnswer) {
       streak++;
@@ -165,7 +167,6 @@ class QuestionController extends ChangeNotifier {
       );
     }
 
-    // ⏳ Attendre 1 seconde avant de passer à la prochaine question
     Future.delayed(Duration(seconds: 1), () {
       if (currentQuestionIndex < widget.amount - 1) {
         currentQuestionIndex++;
@@ -178,10 +179,9 @@ class QuestionController extends ChangeNotifier {
         _playSound("sounds/complete.mp3");
         showResults();
       }
-      notifyListeners(); // 🔁 mettre à jour après passage à la prochaine
+      notifyListeners();
     });
   }
-
 
   void useHint() {
     if (hintsLeft > 0 && !isAnswered) {
