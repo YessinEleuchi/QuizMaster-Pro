@@ -5,9 +5,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import 'firebase_options.dart';
 import 'screens/signIn_screen.dart';
+
+
 
 /// 🎨 Thème sombre & clair
 class ThemeProvider with ChangeNotifier {
