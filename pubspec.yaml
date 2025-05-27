@@ -28,8 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  flutter:
-
+  flutter_localizations:
       sdk: flutter
   http: ^1.2.1
   html: ^0.15.5
@@ -70,6 +69,7 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  generate: true
   assets:
     - assets/sounds/correct.mp3
     - assets/sounds/wrong.mp3

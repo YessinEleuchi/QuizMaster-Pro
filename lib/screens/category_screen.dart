@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quiz_app/main.dart';
 import 'package:quiz_app/screens/question_screen.dart';
 import 'QuizHistoryPage.dart';
@@ -49,6 +50,20 @@ class _CategoryScreenState extends State<CategoryScreen> with SingleTickerProvid
     super.dispose();
   }
 
+  String translateDifficulty(String level, BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+    switch (level.toLowerCase()) {
+      case 'easy':
+        return t.easy;
+      case 'medium':
+        return t.medium;
+      case 'hard':
+        return t.hard;
+      default:
+        return level;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -57,6 +72,8 @@ class _CategoryScreenState extends State<CategoryScreen> with SingleTickerProvid
     final backgroundGradient = isDark
         ? [const Color(0xFF1F1B24), const Color(0xFF121212)]
         : [const Color(0xFFFAF3FF), const Color(0xFF9FBCEA)];
+
+    final t = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: Container(
@@ -77,7 +94,6 @@ class _CategoryScreenState extends State<CategoryScreen> with SingleTickerProvid
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 🎨 Header + toggle icon
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -91,23 +107,57 @@ class _CategoryScreenState extends State<CategoryScreen> with SingleTickerProvid
                           ),
                           transitionBuilder: (child, animation) => ScaleTransition(scale: animation, child: child),
                         ),
-                        IconButton(
-                          icon: Icon(
-                            isDark ? Icons.wb_sunny_outlined : Icons.nightlight_round,
-                            color: primaryColor,
-                          ),
-                          onPressed: () => themeProvider.toggleTheme(),
-                        ),
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                isDark ? Icons.wb_sunny_outlined : Icons.nightlight_round,
+                                color: primaryColor,
+                              ),
+                              onPressed: () => themeProvider.toggleTheme(),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<Locale>(
+                                  onChanged: (Locale? locale) {
+                                    if (locale != null) {
+                                      Provider.of<LocaleProvider>(context, listen: false).setLocale(locale);
+                                    }
+                                  },
+                                  value: Localizations.localeOf(context),
+                                  items: const [
+                                    Locale('en'),
+                                    Locale('fr'),
+                                    Locale('ar'),
+                                  ].map((locale) {
+                                    final flag = locale.languageCode == 'fr'
+                                        ? '🇫🇷'
+                                        : locale.languageCode == 'ar'
+                                        ? '🇸🇦'
+                                        : '🇺🇸';
+                                    return DropdownMenuItem(
+                                      value: locale,
+                                      child: Text(flag, style: const TextStyle(fontSize: 22)),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
                       ],
                     ),
                     const SizedBox(height: 16),
-
-                    // 🎉 Title
                     Center(
                       child: Column(
                         children: [
                           Text(
-                            "🎉 Let's Play!",
+                            "🎉 ${t.title}",
                             style: GoogleFonts.poppins(
                               fontSize: 26,
                               fontWeight: FontWeight.bold,
@@ -115,7 +165,7 @@ class _CategoryScreenState extends State<CategoryScreen> with SingleTickerProvid
                             ),
                           ),
                           Text(
-                            "Customize your quiz adventure",
+                            t.customize,
                             style: GoogleFonts.poppins(
                               fontSize: 14,
                               color: isDark ? Colors.grey[300] : Colors.grey[700],
@@ -124,38 +174,30 @@ class _CategoryScreenState extends State<CategoryScreen> with SingleTickerProvid
                         ],
                       ),
                     ),
-
                     const SizedBox(height: 24),
-
-                    // 🧠 Difficulty dropdown
                     _buildDropdown<String>(
                       value: selectedDifficulty,
-                      label: "🎯 Difficulty",
+                      label: "🎯 ${t.difficulty}",
                       icon: Icons.auto_fix_high,
                       items: ["easy", "medium", "hard"],
+                      displayText: (val) => translateDifficulty(val, context),
                       onChanged: (val) => setState(() => selectedDifficulty = val!),
                     ),
-
                     const SizedBox(height: 16),
-
-                    // 📊 Number of questions
                     _buildDropdown<int>(
                       value: selectedAmount,
-                      label: "🧮 Number of Questions",
+                      label: "🧮 ${t.number_questions}",
                       icon: Icons.format_list_numbered,
                       items: [5, 10, 15, 20],
-                      displayText: (val) => "$val questions",
+                      displayText: (val) => "$val ${t.questions}",
                       onChanged: (val) => setState(() => selectedAmount = val!),
                     ),
-
                     const SizedBox(height: 24),
-
-                    // 📚 Categories
                     Center(
                       child: Column(
                         children: [
                           Text(
-                            "📚 Choose a Category",
+                            "📚 ${t.category}",
                             style: GoogleFonts.poppins(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
@@ -177,14 +219,11 @@ class _CategoryScreenState extends State<CategoryScreen> with SingleTickerProvid
                         ],
                       ),
                     ),
-
                     const SizedBox(height: 24),
-
-                    // ▶️ Start Quiz
                     ElevatedButton.icon(
                       onPressed: _navigateToQuiz,
                       icon: const Icon(Icons.play_circle_fill),
-                      label: const Text("Start Quiz", style: TextStyle(fontSize: 16)),
+                      label: Text(t.start, style: const TextStyle(fontSize: 16)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryColor,
                         foregroundColor: Colors.white,
@@ -192,10 +231,7 @@ class _CategoryScreenState extends State<CategoryScreen> with SingleTickerProvid
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                       ),
                     ),
-
                     const SizedBox(height: 12),
-
-                    // 📜 View History
                     ElevatedButton.icon(
                       onPressed: () {
                         Navigator.push(
@@ -203,10 +239,10 @@ class _CategoryScreenState extends State<CategoryScreen> with SingleTickerProvid
                           MaterialPageRoute(builder: (_) => QuizHistoryPage()),
                         );
                       },
-                      icon: Icon(Icons.history),
-                      label: Text("Voir mes scores", style: TextStyle(fontSize: 16)),
+                      icon: const Icon(Icons.history),
+                      label: Text(t.history, style: const TextStyle(fontSize: 16)),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: isDark ? Colors.grey[800] : Colors.deepPurple,
+                        backgroundColor: isDark ? const Color(0xFF00E5C4) : const Color(0xFF3A0CA3),
                         foregroundColor: Colors.white,
                         minimumSize: const Size.fromHeight(48),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
@@ -222,7 +258,6 @@ class _CategoryScreenState extends State<CategoryScreen> with SingleTickerProvid
     );
   }
 
-  // 🌟 Dropdown Builder
   Widget _buildDropdown<T>({
     required T value,
     required String label,
@@ -254,12 +289,24 @@ class _CategoryScreenState extends State<CategoryScreen> with SingleTickerProvid
       onChanged: onChanged,
     );
   }
+  String translateCategoryName(String label, BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+    switch (label) {
+      case "Science":
+        return t.categoryScience;
+      case "Entertainment":
+        return t.categoryEntertainment;
+      case "General Knowledge":
+        return t.categoryGeneral;
+      default:
+        return label;
+    }
+  }
 
-  // 🧩 Category Chips
   Widget _buildCategoryChip(String label) {
     final isSelected = selectedCategory == label;
     return ChoiceChip(
-      label: Text(label),
+      label: Text(translateCategoryName(label, context)),
       selected: isSelected,
       onSelected: (_) => setState(() => selectedCategory = label),
       selectedColor: const Color(0xFF4C5A93),
@@ -279,7 +326,6 @@ class _CategoryScreenState extends State<CategoryScreen> with SingleTickerProvid
     );
   }
 
-  // ⏭️ Go to QuestionScreen
   void _navigateToQuiz() {
     Navigator.push(
       context,

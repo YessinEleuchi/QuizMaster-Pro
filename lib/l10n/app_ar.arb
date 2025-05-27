@@ -1,0 +1,23 @@
+{
+  "@@locale": "ar",
+  "title": "لنلعب!",
+  "customize": "خصص تجربة الاختبار",
+  "difficulty": "الصعوبة",
+  "number_questions": "عدد الأسئلة",
+  "category": "اختر فئة",
+  "start": "ابدأ الاختبار",
+  "history": "عرض السجل",
+  "noQuizTaken": "لم يتم إجراء أي اختبار.",
+  "unknown": "غير معروف",
+  "categoryScience": "العلوم",
+  "categoryEntertainment": "الترفيه",
+  "categoryGeneral": "المعرفة العامة",
+  "easy": "سهل",
+  "medium": "متوسط",
+  "hard": "صعب",
+  "questions": "أسئلة",
+  "category_label": "الفئة",
+  "score_label": "النتيجة",
+  "date_label": "التاريخ",
+  "unknown_date": "تاريخ غير معروف"
+}

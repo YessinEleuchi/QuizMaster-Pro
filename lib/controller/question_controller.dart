@@ -8,6 +8,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:quiz_app/screens/signIn_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../screens/category_screen.dart';
+
+
 class QuestionController extends ChangeNotifier {
   final BuildContext context;
   final dynamic widget;
@@ -253,27 +256,53 @@ class QuestionController extends ChangeNotifier {
     _timer?.cancel();
     _stopTimerLoop();
     saveQuizScore();
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) => AlertDialog(
         backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-        title: Text("Quiz Terminé", style: GoogleFonts.poppins(color: isDark ? Colors.white : Colors.black)),
+        title: Text(
+          "Quiz Terminé",
+          style: GoogleFonts.poppins(color: isDark ? Colors.white : Colors.black),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text("Score: $score / ${widget.amount}", style: GoogleFonts.poppins(color: isDark ? Colors.white70 : Colors.black)),
-            Text("Streak max: $streak", style: GoogleFonts.poppins(color: isDark ? Colors.white70 : Colors.black)),
-            Text("Catégorie: ${widget.category}", style: GoogleFonts.poppins(color: isDark ? Colors.white70 : Colors.black)),
+            Text("Score: $score / ${widget.amount}",
+                style: GoogleFonts.poppins(color: isDark ? Colors.white70 : Colors.black)),
+            Text("Streak max: $streak",
+                style: GoogleFonts.poppins(color: isDark ? Colors.white70 : Colors.black)),
+            Text("Catégorie: ${widget.category}",
+                style: GoogleFonts.poppins(color: isDark ? Colors.white70 : Colors.black)),
           ],
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("Retour", style: GoogleFonts.poppins(color: isDark ? Colors.tealAccent : Colors.blue)),
+            onPressed: () {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (_) => const CategoryScreen()),
+                    (route) => false,
+              );
+            },
+            child: Text(
+              "Retour",
+              style: GoogleFonts.poppins(
+                color: isDark ? Colors.tealAccent : Colors.blue,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: isDark ? const Color(0xFF00E5C4) : const Color(0xFF3A0CA3),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            ),
             onPressed: () {
               Navigator.pop(context);
               currentQuestionIndex = 0;
@@ -286,12 +315,14 @@ class QuestionController extends ChangeNotifier {
               fetchQuestions();
               notifyListeners();
             },
-            child: Text("Rejouer", style: GoogleFonts.poppins()),
+            child: Text("Rejouer", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
           ),
         ],
       ),
     );
   }
+
+
 
   Color getColor(String answer) {
     if (!isAnswered) return Theme.of(context).primaryColor;

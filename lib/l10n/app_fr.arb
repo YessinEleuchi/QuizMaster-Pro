@@ -1,0 +1,24 @@
+{
+  "@@locale": "fr",
+  "title": "Jouons !",
+  "customize": "Personnalisez votre aventure de quiz",
+  "difficulty": "Difficulté",
+  "number_questions": "Nombre de Questions",
+  "category": "Choisissez une Catégorie",
+  "start": "Commencer le Quiz",
+  "history": "Voir l'historique",
+  "noQuizTaken": "Aucun quiz effectué.",
+  "unknown": "Inconnu",
+  "categoryScience": "Science",
+  "categoryEntertainment": "Divertissement",
+  "categoryGeneral": "Culture générale",
+  "easy": "Facile",
+  "medium": "Moyen",
+  "hard": "Difficile",
+  "questions": "questions",
+  "category_label": "Catégorie",
+  "score_label": "Score",
+  "date_label": "Date",
+  "unknown_date": "Date inconnue"
+
+}

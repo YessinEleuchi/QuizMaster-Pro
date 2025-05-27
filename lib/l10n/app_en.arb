@@ -1,0 +1,24 @@
+{
+  "@@locale": "en",
+  "title": "Let's Play!",
+  "customize": "Customize your quiz adventure",
+  "difficulty": "Difficulty",
+  "number_questions": "Number of Questions",
+  "category": "Choose a Category",
+  "start": "Start Quiz",
+  "history": "View History",
+  "noQuizTaken": "No quizzes taken yet.",
+  "unknown": "Unknown",
+  "categoryScience": "Science",
+  "categoryEntertainment": "Entertainment",
+  "categoryGeneral": "General Knowledge",
+  "easy": "Easy",
+  "medium": "Medium",
+  "hard": "Hard",
+  "questions": "questions",
+  "category_label": "Category",
+  "score_label": "Score",
+  "date_label": "Date",
+  "unknown_date": "Unknown date"
+
+}

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class QuestionHistoryWidget extends StatelessWidget {
   final String category;
@@ -16,11 +17,26 @@ class QuestionHistoryWidget extends StatelessWidget {
     required this.isDarkMode,
   });
 
+  String translateCategoryName(String label, BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+    switch (label) {
+      case "Science":
+        return t.categoryScience;
+      case "Entertainment":
+        return t.categoryEntertainment;
+      case "General Knowledge":
+        return t.categoryGeneral;
+      default:
+        return label;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final formattedDate = date != null
-        ? DateFormat('dd MMMM yyyy à HH:mm', 'fr_FR').format(date!)
-        : "Date inconnue";
+        ? DateFormat('dd MMMM yyyy à HH:mm', Localizations.localeOf(context).toLanguageTag()).format(date!)
+        : t.unknown_date;
 
     return Card(
       color: isDarkMode ? const Color(0xFF2C2C2C) : Colors.white,
@@ -37,15 +53,15 @@ class QuestionHistoryWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("📚 Catégorie : $category",
+                  Text("📚 ${t.category_label} : ${translateCategoryName(category, context)}",
                       style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w600,
                           color: isDarkMode ? Colors.white : Colors.black87)),
                   const SizedBox(height: 6),
-                  Text("✅ Score : $score",
+                  Text("✅ ${t.score_label} : $score",
                       style: GoogleFonts.poppins(
                           fontSize: 15, color: isDarkMode ? Colors.white70 : Colors.black87)),
-                  Text("🕒 Date : $formattedDate",
+                  Text("🕒 ${t.date_label} : $formattedDate",
                       style: GoogleFonts.poppins(
                           fontSize: 13, color: isDarkMode ? Colors.grey : Colors.black54)),
                 ],
