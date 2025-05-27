@@ -30,8 +30,8 @@ A modern, multilingual quiz app built with **Flutter**, using **Firebase Authent
 
 ## 📸 Screenshots
 
-| Light Mode | Dark Mode | Language Switch |
-|------------|-----------|-----------------|
+| Light Mode | Dark Mode | scores History                |
+|------------|-----------|-------------------------------|
 | ![light](screenshots/light.png) | ![dark](screenshots/dark.png) | ![lang](screenshots/lang.png) |
 
 ---
