@@ -2,165 +2,100 @@
 
 <div align="center">
 
-![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)
-![Firebase](https://img.shields.io/badge/Firebase-%23039BE5.svg?style=for-the-badge&logo=firebase)
-![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)
+<img src="https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white" />
+<img src="https://img.shields.io/badge/Firebase-%23039BE5.svg?style=for-the-badge&logo=firebase" />
+<img src="https://img.shields.io/badge/Dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white" />
 
 </div>
 
-## 📱 About The Project
+---
 
-QuizMaster Pro is a modern, feature-rich quiz application built with Flutter and Firebase. It offers an engaging and interactive quiz experience with real-time feedback, sound effects, and a beautiful user interface.
+## 📱 About the App
 
-## ✨ Features
+**QuizMaster Pro** is a modern, multilingual quiz application built with **Flutter** and powered by **Firebase**. It offers an engaging quiz experience enhanced with real-time feedback, sound effects, score tracking, and push notifications — all wrapped in a beautiful and responsive interface.
 
-- 🎮 Interactive quiz interface
-- 🔐 User authentication with Firebase
-- 🎵 Sound effects for correct/incorrect answers
-- ⏱️ Timer functionality
-- 🎉 Celebration effects
-- 🌐 Multi-language support
-- 💾 Local data persistence
-- 📊 Score tracking
-- 📱 Responsive design
+---
 
-## 🛠️ Built With
+## ✨ Key Features
 
-- [Flutter](https://flutter.dev/) - UI Framework
-- [Firebase](https://firebase.google.com/) - Backend & Authentication
-- [Riverpod](https://riverpod.dev/) - State Management
-- [Google Fonts](https://fonts.google.com/) - Typography
-- [Shared Preferences](https://pub.dev/packages/shared_preferences) - Local Storage
-- [Audio Players](https://pub.dev/packages/audioplayers) - Sound Effects
-- [Confetti](https://pub.dev/packages/confetti) - Celebration Effects
+- 🎮 **Interactive & Thematic Quiz Interface**
+- 🔐 **Firebase Authentication** (Email/Password, Anonymous)
+- 🔊 **Sound Feedback** on Answers
+- ⏱️ **Countdown Timer** per Question
+- 🎉 **Confetti Effects** for Celebration
+- 🌍 **Multi-language Support**: English, Français, العربية
+- 📈 **Score History Tracking** (Firestore)
+- 🌙 **Theme Switcher** (Light / Dark Mode)
+- 🔔 **Push & Local Notifications** (FCM + flutter_local_notifications)
+- 💾 **Local Persistence** with SharedPreferences
+- 📱 **Responsive Layout** for all screens
 
-## 🚀 Getting Started
+---
 
-### Prerequisites
+## 🛠️ Tech Stack
 
-- Flutter SDK (^3.6.2)
-- Dart SDK
-- Firebase account
-- Android Studio / VS Code
+| Tool | Description |
+|------|-------------|
+| **Flutter** | Cross-platform UI toolkit |
+| **Dart** | Programming language |
+| **Firebase** | Backend services (Auth, Firestore, FCM) |
+| **Riverpod** | State management |
+| **Shared Preferences** | Local data storage |
+| **Confetti** | Visual celebration |
+| **Audio Players** | Sound effects |
+| **Google Fonts** | Custom typography |
+| **intl** | Localization |
+| **flutter_local_notifications** | Local notifications |
+| **firebase_messaging** | Push notifications |
 
-### Installation
+---
 
-1. Clone the repository
-```bash
-git clone https://github.com/YessineELEUCHI/QuizMaster-Pro.git
-```
+## 🖼️ Screenshots
 
-2. Install dependencies
-```bash
-flutter pub get
-```
+| Light Mode | Dark Mode | Multilingual Support |
+|------------|-----------|----------------------|
+| ![Light](screenshots/light.png) | ![Dark](screenshots/dark.png) | ![Lang](screenshots/lang.png) |
 
-3. Configure Firebase
-   - Create a new Firebase project
-   - Add your Android/iOS app to the Firebase project
-   - Download and add the configuration files
-   - Enable Authentication and Firestore
-
-4. Run the app
-```bash
-flutter run
-```
+---
 
 ## 📁 Project Structure
 
 ```
 lib/
-├── controller/    # Business logic
-├── l10n/         # Localization files
-├── model/        # Data models
-├── screens/      # UI screens
-├── service/      # API services
-├── widget/       # Reusable widgets
-└── main.dart     # Entry point
+├── controller/    # Business logic & state management
+├── l10n/          # App localization files
+├── model/         # Data models
+├── screens/       # Main UI screens
+├── service/       # Firebase & API integrations
+├── widget/        # Reusable UI components
+└── main.dart      # Entry point
 ```
 
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 👨‍💻 Author
-
-**Yessine ELEUCHI**
-- GitHub: [@YessineELEUCHI](https://github.com/YessineELEUCHI)
-
-## 🙏 Acknowledgments
-
-- Flutter team for the amazing framework
-- Firebase for the backend services
-- All the package maintainers who made this project possible
-
 ---
 
-<div align="center">
-Made with ❤️ by Yessine ELEUCHI
-</div>
+## 🚀 Getting Started
 
-# 📱 Flutter Quiz App
+### 🔧 Prerequisites
 
-A modern, multilingual quiz app built with **Flutter**, using **Firebase Authentication**, **Firestore**, and **Push Notifications**. It supports **English**, **Français**, and **العربية**. Users can play quizzes, track their score history, and get notified about updates and reminders.
+- [Flutter SDK 3.x](https://flutter.dev/docs/get-started/install)
+- [Dart SDK](https://dart.dev/get-dart)
+- [Firebase Account](https://firebase.google.com/)
+- Android Studio / VS Code
 
----
+### 🔥 Firebase Setup
 
-## 🚀 Features
+1. Go to [Firebase Console](https://console.firebase.google.com)
+2. Create a new project and add Android/iOS apps
+3. Enable:
+   - **Authentication** (Email/Password or Anonymous)
+   - **Cloud Firestore**
+   - **Firebase Cloud Messaging (FCM)**
+4. Download `google-services.json` and place it in `android/app/`
+5. Optionally, download `GoogleService-Info.plist` for iOS
 
-- 🧠 Play quizzes by category, difficulty, and number of questions
-- 🌍 Supports **English, French, Arabic** (with RTL support)
-- 🔐 **Firebase Authentication** (Email & Anonymous)
-- 📊 **Score history** saved to **Firestore**
-- 🕹️ Theme switcher (Light / Dark Mode)
-- 🔔 **Local & Push Notifications** using `flutter_local_notifications` and `firebase_messaging`
+### ⚙️ Android Configuration
 
----
-
-## 📦 Tech Stack
-
-| Tool | Usage |
-|------|-------|
-| Flutter | Frontend Framework |
-| Firebase Auth | User Authentication |
-| Cloud Firestore | Storing scores |
-| FCM + flutter_local_notifications | Push & Local notifications |
-| `intl` | Translations & localization |
-| `provider` | State Management |
-
----
-
-## 📸 Screenshots
-
-| Light Mode | Dark Mode | scores History                |
-|------------|-----------|-------------------------------|
-| ![light](screenshots/light.png) | ![dark](screenshots/dark.png) | ![lang](screenshots/lang.png) |
-
----
-
-## 🧪 Setup Instructions
-
-### 1. 🔧 Prerequisites
-
-- Flutter 3.x
-- Firebase project set up with Firestore, Auth, and FCM enabled
-
-### 2. 🔥 Firebase Configuration
-
-- Create a Firebase project at https://console.firebase.google.com
-- Enable:
-    - Authentication (Email/Password or Anonymous)
-    - Firestore Database
-    - Cloud Messaging
-- Download `google-services.json` and place it in `android/app/`
-
-### 3. ⚙️ Android Configuration
-
-In `android/app/build.gradle`:
+Add to `android/app/build.gradle`:
 
 ```gradle
 compileOptions {
@@ -172,3 +107,52 @@ compileOptions {
 dependencies {
     implementation "com.android.tools:desugar_jdk_libs:2.0.3"
 }
+```
+
+### 🛠 Installation
+
+1. Clone the repository
+
+```bash
+git clone https://github.com/YessineELEUCHI/QuizMaster-Pro.git
+cd QuizMaster-Pro
+```
+
+2. Install dependencies
+
+```bash
+flutter pub get
+```
+
+3. Run the app
+
+```bash
+flutter run
+```
+
+---
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome!  
+Feel free to [open an issue](https://github.com/YessineELEUCHI/QuizMaster-Pro/issues) or submit a pull request.
+
+---
+
+## 📝 License
+
+This project is licensed under the **MIT License** – see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 👨‍💻 Author
+
+**Yessine ELEUCHI**  
+📧 yessineleuchi.embedded@gmail.com  
+🔗 [GitHub](https://github.com/YessineELEUCHI)
+
+---
+
+<div align="center">
+Made with ❤️ and Flutter by <strong>Yessine ELEUCHI</strong>
+</div>
