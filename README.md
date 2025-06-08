@@ -137,7 +137,7 @@ flutter run
 
 **Yessine ELEUCHI**  
 📧 yessineleuchi.embedded@gmail.com  
-🔗 [GitHub](https://github.com/YessineELEUCHI)
+🔗 [GitHub](https://github.com/YessineEleuchi)
 
 ---
 
